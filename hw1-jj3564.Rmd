@@ -1,0 +1,133 @@
+---
+title: "P8105_HW1_jj3564"
+output: github_document
+author: "Kate Jiao"
+date: "2025-09-20
+"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Problem 1
+
+**Loading libraries**
+
+
+```{r load_libraries}
+library(moderndive)
+```
+```{r}
+library(tidyverse)
+```
+```
+
+**Loading the dataset**
+
+```{r}
+data("early_january_weather")
+```
+
+This dataset has `r nrow(early_january_weather)` rows and `r ncol(early_january_weather)` columns. This dataset has 15 variables, which are `r names(early_january_weather)`. The mean temperature is `r mean(pull(early_january_weather, temp))` degrees Fahrenheit.
+
+Other important variables include those related to humidity and precipitation. The mean dew point was `r mean(pull(early_january_weather, dewp))` degrees Fahrenheit, the mean humidity was `r mean(pull(early_january_weather, humid))`%, and the mean precipitation was `r mean(pull(early_january_weather, precip))` inches. The average wind speed during this month was `r mean(pull(early_january_weather, wind_speed))` mph.
+
+**Creating a scatterplot**
+
+```{r}
+ggplot(early_january_weather, aes(x = time_hour, y = temp, color=humid)) + geom_point()
+```
+
+Based on this plot, it is clear how temperature fluctuates throughout the day. There is a  zig-zag effect, because higher temperatures are occurring during the day and then they decline at night (and this is a cycle that continues throughout the month). The beginning of the month has cooler temperatures during daytime and nighttime, and by January 14th, both of these temperatures have increased. Also, there was less humidity at the beginning of the month when compared to the days leading up to January 14th.
+
+**Saving scatterplot to directory**
+
+```{r}
+ggsave("p8105_hw1_msp2210_scatterplot.pdf", height = 4, width = 6)
+```
+
+## Problem 2
+
+**Creating dataframe**
+
+```{r}
+problem2_df =
+  tibble(
+    random_samp = rnorm(10),
+    vec_logical = random_samp > 10,
+    vec_char = c("wildebeest", "giraffe", "zebra", "elephant", "lion", "hippo", "warthog", "rhino", "ostrich", "flamingo"),
+    vec_factor = factor(c("Level 1", "Level 2", "Level 3", "Level 2", "Level 3", "Level 3", "Level 2", "Level 1", "Level 2", "Level 3"))
+)
+```
+
+**Taking means of variables**
+
+```{r}
+mean(pull(problem2_df, random_samp))
+mean(pull(problem2_df, vec_logical))
+mean(pull(problem2_df, vec_char))
+mean(pull(problem2_df, vec_factor))
+```
+
+The random sample variable and the logical vector produce numeric values, but the character and factor variables do not, they result in "NA". As they are not numeric, it is not possible to take the arithmetic mean.
+
+**Converting variables to numeric variables**
+
+```{r eval = FALSE}
+as.numeric(pull(problem2_df, vec_logical))
+as.numeric(pull(problem2_df, vec_char))
+as.numeric(pull(problem2_df, vec_factor))
+```
+
+Now that the variables have numeric values, it is possible to take the mean. For the logical vector, the "TRUE" values become 1 and the "FALSE" values become 0, which means that taking the mean of this vector will give you an actual number (and this is what happened - even before using the as.numeric() function, I was able to take the mean of the logical vector). For the character vector, the as.numeric() function cannot convert character strings into numeric values, so NAs are introduced by coercion. For the factor vector, the as.numeric function converts the factors into numbers based on the levels, which means it will now be possible to take the mean. Initially, we were unable to find the mean of these variables because they were not numeric variables.---
+title: "Theming with bslib and thematic"
+output: 
+  html_document:
+    code_folding: show
+    theme:
+      bg: "#202123"
+      fg: "#B8BCC2"
+      primary: "#EA80FC"
+      secondary: "#00DAC6"
+      base_font:
+        google: Prompt
+      heading_font:
+        google: Proza Libre
+---
+
+```{r setup, include=FALSE}
+if (requireNamespace("thematic")) 
+  thematic::thematic_rmd(font = "auto")
+```
+
+## R Markdown
+
+This is an R Markdown document themed with [`{bslib}` package](https://rstudio.github.io/bslib/). `{bslib}` makes it easy to customize the main colors and fonts of a `html_document`, [`flexdashboard::flex_dashboard`](https://flexdashboard-pkg.netlify.app/articles/articles/theme.html), [shiny::fluidPage()](https://shiny.rstudio.com/reference/shiny/latest/fluidPage.html), or more generally any website that uses [Bootstrap](https://getbootstrap.com/) for styling. The `theme` parameter in the yaml front-matter of this Rmd document describes a [`bslib::bs_theme()`](https://rstudio.github.io/bslib/reference/bs_theme.html) object, which provides access to 100s of [theming options](https://rstudio.github.io/bslib/articles/bs5-variables.html) (via its `...` argument) in addition to the main options demonstrated here (e.g., `bg`, `fg`, `primary`, etc).
+
+This particular example uses `{bslib}`'s default [Bootstrap version (which, at the time of writing, is Bootstrap 5)](https://rstudio.github.io/bslib/articles/bslib.html#versions). However, if reproducibility is important, it's recommended that you "lock-in" the version by adding `version: 5` to the `theme` definition.
+
+## Themed Plots {.tabset .tabset-pills}
+
+When running this document with [`{thematic}`](https://rstudio.github.io/thematic/) installed, the `thematic::thematic_rmd(font = "auto")` effectively translates `theme` (CSS) settings to new global theming defaults for `{ggplot2}`, `{lattice}`, and `{base}` R graphics:
+
+### ggplot2
+
+```{r}
+library(ggplot2)
+
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() + geom_smooth()
+```
+
+### lattice
+
+```{r}
+lattice::show.settings()
+```
+
+### base
+
+```{r}
+plot(pressure, col = thematic::thematic_get_option("accent"))
+```
